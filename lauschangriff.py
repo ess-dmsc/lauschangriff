@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 """
   This is a little program which allows to listen to Kafa messages on a 
   specified number of topics. A summary of each message will be printed, 
@@ -63,7 +63,7 @@ def formatTSHuman(ts):
 def printEventMessage(msg):
     ev = ev42.EventMessage.GetRootAsEventMessage(bytearray(msg.value),0)
     print('type: ev42, nEvent: ' + str(ev.DetectorIdLength()) + ' ,topic: ' \
-          + msg.topic + ' ,det: ' + ev.SourceName() + \
+          + msg.topic + ' ,det: ' + ev.SourceName().decode() + \
           ' ,ts:  ' +  str(ev.PulseTime())\
          + ',tsh: ' + formatTSHuman(ev.PulseTime()))
 
@@ -112,7 +112,7 @@ def decodeLogValue(logmsg):
 def printLogMessage(msg):
     log = ld.LogData.GetRootAsLogData(bytearray(msg.value),0)
     val = decodeLogValue(log)
-    print('type: f142, source: ' + log.SourceName() \
+    print('type: f142, source: ' + log.SourceName().decode() \
           + ',value: ' + val  \
           + ', ts: ' + str(log.Timestamp())\
           + ',tsh: ' + formatTSHuman(log.Timestamp()))
@@ -148,7 +148,7 @@ def decodeHistValue(ls):
 
 def printHistogram(msg):
     ls = hist.EventHistogram.GetRootAsEventHistogram(bytearray(msg.value),0)
-    print('type: hs00, source: ' + ls.Source() \
+    print('type: hs00, source: ' + ls.Source().decode() \
           + ',counts: ' + decodeHistValue(ls) \
           + ',rank: ' + str(ls.CurrentShapeLength()) \
           + ', ts: ' + str(ls.Timestamp())\
@@ -183,14 +183,14 @@ def printMessageSummary(msg):
 #    msgProcessors['ns11'] = printNSCache11 not in use, 12/2018
     msgProcessors['ns10'] = printNSCache10
  
-    msgID = msg.value[4:8]
-    if msgProcessors.has_key(msgID):
+    msgID = msg.value[4:8].decode()
+    if msgID in msgProcessors:
        msgProcessors[msgID](msg)
     elif msg.value[0] == '{':
        print('topic: ' + msg.topic +' json: '+  msg.value)
     else:
        print('Received unknown message of possible type ' + msgID 
-             + ' from topic ' +msg.topic)
+             + ' from topic ' + msg.topic.decode('utf8'))
 
 def configureOffset(consumer,args):
     partlist = []

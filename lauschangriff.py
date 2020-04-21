@@ -159,8 +159,8 @@ def printNSCache10(msg):
     entry = ce10.CacheEntry.GetRootAsCacheEntry(bytearray(msg.value),0)
     ts = entry.Time()
     dt = datetime.fromtimestamp(ts);
-    print('type: ns10, key: ' + entry.Key() \
-          + ',value: ' + entry.Value() \
+    print('type: ns10, key: ' + entry.Key().decode() \
+          + ',value: ' + str(entry.Value()) \
           + ', ts: ' + str(entry.Time()) \
           + ',tsh: ' + dt.isoformat() )
 
@@ -186,11 +186,11 @@ def printMessageSummary(msg):
     msgID = msg.value[4:8].decode()
     if msgID in msgProcessors:
        msgProcessors[msgID](msg)
-    elif msg.value[0] == '{':
-       print('topic: ' + msg.topic +' json: '+  msg.value)
+    elif msg.value.decode()[0] == '{':
+       print('topic: ' + msg.topic +' json: '+  msg.value.decode())
     else:
        print('Received unknown message of possible type ' + msgID 
-             + ' from topic ' + msg.topic.decode('utf8'))
+             + ' from topic ' + msg.topic)
 
 def configureOffset(consumer,args):
     partlist = []

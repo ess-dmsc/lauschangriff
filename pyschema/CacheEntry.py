@@ -2,7 +2,10 @@
 
 # namespace: 
 
+from __future__ import absolute_import, division, print_function
+
 import flatbuffers
+
 
 # /// pylint: skip-file
 class CacheEntry(object):
@@ -24,7 +27,7 @@ class CacheEntry(object):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         if o != 0:
             return self._tab.String(o + self._tab.Pos)
-        return None
+        return ""
 
     # CacheEntry
     def Time(self):
@@ -44,15 +47,15 @@ class CacheEntry(object):
     def Expired(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(10))
         if o != 0:
-            return bool(self._tab.Get(flatbuffers.number_types.BoolFlags, o + self._tab.Pos))
-        return False
+            return self._tab.Get(flatbuffers.number_types.BoolFlags, o + self._tab.Pos)
+        return 0
 
     # CacheEntry
     def Value(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
         if o != 0:
             return self._tab.String(o + self._tab.Pos)
-        return None
+        return ""
 
 def CacheEntryStart(builder): builder.StartObject(5)
 def CacheEntryAddKey(builder, key): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(key), 0)

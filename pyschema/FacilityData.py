@@ -5,4 +5,5 @@
 class FacilityData(object):
     NONE = 0
     ISISData = 1
+    AdcPulseDebug = 2
 
